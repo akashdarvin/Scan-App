@@ -26,7 +26,7 @@ class HomeScreen extends StatelessWidget {
             onPressed: () {},
           ),
           IconButton(
-            icon: Icon(Icons.person, color: Colors.white),
+            icon: Icon(Icons.abc, color: Colors.white),
             onPressed: () {},
           ),
           IconButton(
