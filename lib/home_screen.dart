@@ -1,10 +1,30 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:scanapp/setting_page.dart';
 import 'scanidtile.dart';
+import 'dart:io'; // For File class
+import 'package:http/http.dart' as http; // For sending HTTP requests
+import 'package:http_parser/http_parser.dart'; // For content type
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final ImagePicker _picker = ImagePicker();
+  late String name = "";
+
+  void navigateToPage(BuildContext context, Widget page) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => page),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,37 +46,32 @@ class HomeScreen extends StatelessWidget {
             onPressed: () {},
           ),
           IconButton(
-            icon: Icon(Icons.abc, color: Colors.white),
+            icon: Icon(Icons.person, color: Colors.white),
             onPressed: () {},
           ),
           IconButton(
             icon: Icon(Icons.settings, color: Colors.white),
-            onPressed: () {},
+            onPressed: () => navigateToPage(
+              context,
+              Settingpage(),
+            ),
           ),
         ],
       ),
-      backgroundColor: const Color.fromARGB(255, 26, 1, 69),
+      backgroundColor: const Color.fromARGB(255, 28, 1, 75),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // 1st button for front ID
+            //! NAME WILL BE UPDATED BY SETSTATE AFTER API CALL
+            // Text(name),
             ScanIdTile(
               title: "Scan Front of ID Card",
               onPressed: () {
                 _openCamera();
               },
             ),
-            SizedBox(height: 80),
-            // 2nd button for back ID
-            ScanIdTile(
-              title: "Scan Back of ID Card",
-              onPressed: () {
-                _openCamera();
-              },
-            ),
             SizedBox(height: 100),
-            // Upload image from gallery button
             ElevatedButton.icon(
               onPressed: () {
                 _openGallery();
@@ -85,16 +100,52 @@ class HomeScreen extends StatelessWidget {
   }
 
   Future<void> _openCamera() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
-    if (image != null) {
-      print("Image Path: ${image.path}");
-    }
+    await _picker.pickImage(source: ImageSource.camera);
   }
 
   Future<void> _openGallery() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      print("Gallery Image Path: ${image.path}");
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      File file = File(pickedFile.path);
+      await _uploadImage(file);
+    }
+  }
+
+  Future<void> _uploadImage(File file) async {
+    try {
+      var uri = Uri.parse("http://127.0.0.1:8000/extract-info/");
+
+      final int integer = int.parse("123");
+
+      var request = http.MultipartRequest('POST', uri)
+        ..files.add(await http.MultipartFile.fromPath(
+          'file', // Key for the file in the request
+          file.path,
+          contentType:
+              MediaType('image', 'jpeg'), // Update if file type is different
+        ));
+
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        debugPrint("Upload successful!");
+        final responseData = await http.Response.fromStream(response);
+
+        // Parse the JSON response
+        final Map<String, dynamic> responseJson = jsonDecode(responseData.body);
+
+        // Assign name from the response to the 'name' variable
+        String nameFromResponse = responseJson['name'];
+        debugPrint('Name from response: $nameFromResponse');
+
+        setState(() {
+          name = nameFromResponse;
+        });
+      } else {
+        debugPrint("Upload failed with status: ${response.statusCode}");
+      }
+    } catch (e) {
+      debugPrint("Error occurred: $e");
     }
   }
 }
