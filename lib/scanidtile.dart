@@ -19,14 +19,14 @@ class ScanIdTile extends StatelessWidget {
             minimumSize: Size(300, 180)),
         icon: Icon(
           Icons.camera_alt_rounded,
-          color: Colors.black,
+          color: const Color.fromARGB(255, 0, 77, 139),
           size: 40,
         ),
         label: Text(
           title,
           style: TextStyle(
               fontSize: 25,
-              color: Colors.black,
+              color: const Color.fromARGB(255, 0, 77, 139),
               fontStyle: FontStyle.italic,
               fontWeight: FontWeight.bold),
         ));

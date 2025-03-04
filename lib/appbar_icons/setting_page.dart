@@ -6,16 +6,16 @@ class Settingpage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.deepPurple[200],
+      backgroundColor: const Color.fromARGB(255, 140, 195, 240),
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple[400],
+        backgroundColor: const Color.fromARGB(255, 67, 162, 239),
         title: Center(child: Text("S E T T I N G S")),
       ),
       body: ListView(
         children: [
           ListTile(
-            leading: Icon(Icons.person),
-            title: Text("Profile"),
+            leading: Icon(Icons.brush),
+            title: Text("theme"),
             onTap: () {},
           ),
           ListTile(

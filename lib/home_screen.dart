@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:scanapp/setting_page.dart';
+import 'package:scanapp/appbar_icons/profile_page.dart';
+import 'package:scanapp/appbar_icons/setting_page.dart';
+import 'appbar_icons/home_page.dart';
 import 'scanidtile.dart';
 import 'dart:io'; // For File class
 import 'package:http/http.dart' as http; // For sending HTTP requests
@@ -30,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 0, 9, 33),
+        backgroundColor:  const Color.fromARGB(255, 6, 60, 104),
         title: Text(
           "ScanMe",
           style: TextStyle(
@@ -43,28 +45,31 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.home, color: Colors.white),
-            onPressed: () {},
+            onPressed: () => navigateToPage(
+              context,
+               HomePage()),
           ),
           IconButton(
             icon: Icon(Icons.person, color: Colors.white),
-            onPressed: () {},
+            onPressed: () => navigateToPage(
+              context,
+               ProfilePage()),
           ),
           IconButton(
             icon: Icon(Icons.settings, color: Colors.white),
             onPressed: () => navigateToPage(
               context,
-              Settingpage(),
-            ),
+              Settingpage()),
           ),
         ],
       ),
-      backgroundColor: const Color.fromARGB(255, 28, 1, 75),
+      backgroundColor:  const Color.fromARGB(255, 0, 77, 139),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             //! NAME WILL BE UPDATED BY SETSTATE AFTER API CALL
-            // Text(name),
+            // Text(name),   
             ScanIdTile(
               title: "Scan Front of ID Card",
               onPressed: () {
@@ -72,6 +77,15 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             SizedBox(height: 100),
+
+            ScanIdTile(
+              title: "Scan Back of ID Card",
+              onPressed: () {
+                _openCamera();
+              },
+            ),
+            SizedBox(height: 100),
+            
             ElevatedButton.icon(
               onPressed: () {
                 _openGallery();
@@ -83,13 +97,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 minimumSize: Size(100, 50),
               ),
-              icon: Icon(Icons.upload, size: 20, color: Colors.black),
+              icon: Icon(Icons.upload, size: 20, color: const Color.fromARGB(255, 0, 77, 139)),
               label: Text(
                 "Upload Image",
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: const Color.fromARGB(255, 0, 77, 139),
                 ),
               ),
             )
